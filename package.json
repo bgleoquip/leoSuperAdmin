@@ -15,6 +15,10 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },  
+  "repository": {
+    "type": "git",
+    "url": "git+https://bgleoquip:leoquip123@github.com/bgleoquip/leosuperadmin.git"
   },
   "browserslist": {
     "production": [
