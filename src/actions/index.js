@@ -1,10 +1,42 @@
 import axios from 'axios';
-import { AUTH_SIGN_UP, AUTH_ERROR } from './types';
+import { AUTH_SIGN_UP, AUTH_SIGN_OUT, AUTH_ERROR } from './types';
 
 /*
   ActionCreators -> create/return Actions ({ }) -> dispatched -> middlewares -> reducers
 */
 import config from "../configration";
+
+const serverUrl = config.serverUrl + ":" + config.serverPort + "/";
+
+export const oauthGoogle = data => {
+  return async dispatch => {
+    const res = await axios.post(serverUrl + 'users/oauth/google', {
+      access_token: data
+    });
+
+    dispatch({
+      type: AUTH_SIGN_UP,
+      payload: res.data.token
+    });
+
+    localStorage.setItem('JWT_TOKEN', res.data.token);
+  };
+}
+
+export const oauthFacebook = data => {
+  return async dispatch => {
+    const res = await axios.post(serverUrl + 'users/oauth/facebook', {
+      access_token: data
+    });
+
+    dispatch({
+      type: AUTH_SIGN_UP,
+      payload: res.data.token
+    });
+
+    localStorage.setItem('JWT_TOKEN', res.data.token);
+  };
+}
 
 export const signUp = data => {
   /*
@@ -16,7 +48,7 @@ export const signUp = data => {
   return async dispatch => {
     try {
       console.log('[ActionCreator] signUp called!')
-      const res = await axios.post(config.serverUrl + ":" + config.serverPort +"users/signup", data);
+      const res = await axios.post(serverUrl + 'users/signup', data);
 
       console.log('[ActionCreator] signUp dispatched an action!')
       dispatch({
@@ -31,5 +63,16 @@ export const signUp = data => {
         payload: 'Email is already in use'
       })
     }
-  }
+  };
+}
+
+export const signOut = () => {
+  return dispatch => {
+    localStorage.removeItem('JWT_TOKEN');
+
+    dispatch({
+      type: AUTH_SIGN_OUT,
+      payload: ''
+    })
+  };
 }
